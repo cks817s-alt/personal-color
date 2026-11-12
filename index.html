@@ -122,9 +122,21 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
 #privacy h2{margin:0 0 .5em;color:var(--rose2);font-size:1.4em}
 #privacy dl{margin:0}#privacy dt{font-weight:800;margin-top:.7em;color:var(--ink)}#privacy dd{margin:.1em 0 0;color:#5a4650}
 #privacy dd b{color:var(--rose2)}
-#toast{position:fixed;left:50%;bottom:8%;transform:translateX(-50%);background:#2f7d5c;color:#fff;font-weight:800;padding:.7em 1.4em;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25);z-index:60;display:none;font-size:clamp(14px,2vmin,22px);white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:8%;transform:translateX(-50%);background:#2f7d5c;color:#fff;font-weight:800;padding:.7em 1.4em;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25);z-index:60;display:none;font-size:clamp(14px,2vmin,22px);white-space:nowrap;pointer-events:none}
 .delbtn{display:inline-block;margin-top:.5em;background:rgba(255,255,255,.92);color:var(--rose2);font-weight:800;border-radius:999px;padding:.35em 1em;font-size:.9em}
 #cdn{font-size:.85em;color:#a98a97;text-align:center;margin-top:.6em}
+/* 진단 스튜디오: 화면 빛이 얼굴에 색을 비추지 않도록 무채색(중립 회색·흰색)으로 */
+body.studio{background:#ececec}
+body.studio #mirrorWrap{box-shadow:0 0 0 .35em #fff,0 0 0 .55em #c8c8c8,0 14px 34px rgba(0,0,0,.18)}
+body.studio.lamp{background:#fafafa}
+body.studio.lamp #mirrorWrap{box-shadow:0 0 0 .6em #fff,0 0 2.2em 1.2em #fff,0 0 0 .75em #dcdcdc}
+body.studio .card,body.studio .bubble,body.studio .pick{box-shadow:0 3px 10px rgba(0,0,0,.08)}
+#bgBtn{position:absolute;right:.6em;top:.6em;background:rgba(255,255,255,.9);border-radius:999px;padding:.3em .8em;font-weight:800;font-size:.85em;box-shadow:0 2px 8px rgba(0,0,0,.15);display:none}
+.lrow{display:flex;justify-content:space-between;align-items:center;padding:.35em 0;border-bottom:1px dashed #e4e4e4;gap:.6em}
+.lrow:last-child{border-bottom:0}
+.lrow b{white-space:nowrap}
+.lrow span{font-weight:800;text-align:right}
+.lrow span.good{color:var(--ok)}.lrow span.warn{color:#d9822b}
 #vid{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0}
 
 /* 세로(태블릿) */
@@ -174,7 +186,7 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
   </section>
 
   <section id="work" class="screen">
-    <div id="mirrorWrap"><canvas id="mirror" width="600" height="800"></canvas><div id="mirrorTag"></div></div>
+    <div id="mirrorWrap"><canvas id="mirror" width="600" height="800"></canvas><div id="mirrorTag"></div><button id="bgBtn">배경: 중립 회색</button></div>
     <div id="side">
       <div id="steps"><span>① 촬영</span><span>② AI 분석</span><span>③ 색 천 대 보기</span><span>④ 결과</span></div>
       <div id="coach">
@@ -201,7 +213,7 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
   <h2>🔒 사진·개인정보 이용 안내</h2>
   <dl>
    <dt>① 무엇을 사용하나요?</dt><dd>카메라에 비친 <b>얼굴 화면</b>과, 진단을 위해 찍는 <b>사진 1장</b>만 사용해요. 이름·학교·연락처 같은 정보는 묻지 않아요.</dd>
-   <dt>② 어디에 사용하나요?</dt><dd>피부색과 머리카락색을 계산하고, 거울 화면과 결과 카드를 <b>본인에게 보여 주는 데에만</b> 사용해요.</dd>
+   <dt>② 어디에 사용하나요?</dt><dd>피부색과 머리카락색을 계산하고, 거울 화면과 결과 카드를 <b>본인에게 보여 주는 데에만</b> 사용해요. 사진의 배경은 진단용 <b>회색으로 가려서</b> 뒤에 있는 사람이나 물건이 결과 카드에 나오지 않아요.</dd>
    <dt>③ 저장하나요?</dt><dd><b>저장하지 않아요.</b> 파일, 서버, 브라우저 저장소 어디에도 남기지 않고, 체험하는 동안 이 기기의 임시 기억(메모리)에만 잠깐 올려 둬요.</dd>
    <dt>④ 다른 곳으로 보내나요?</dt><dd><b>보내지 않아요.</b> 모든 계산은 이 기기 안에서만 이루어져요. 인터넷으로 전송하지 않으므로 만든 사람이나 다른 사람은 사진을 볼 수 없어요.</dd>
    <dt>⑤ 언제 지워지나요?</dt><dd>「처음으로」나 「처음부터 다시 하기」를 누르면 <b>즉시 지워지고 카메라도 꺼져요.</b> 60~90초 동안 아무도 누르지 않아도 자동으로 지워져요. 결과 화면의 <b>「내 사진 지금 지우기」</b>로 바로 지울 수도 있어요.</dd>
@@ -221,16 +233,38 @@ const W=600,H=800,OV={x:300,y:340,rx:150,ry:200};
 const sm=document.createElement('canvas');sm.width=150;sm.height=200;const sctx=sm.getContext('2d',{willReadFrequently:true});
 const still=document.createElement('canvas');still.width=W;still.height=H;const stx=still.getContext('2d');
 const clamp=(v,a=-1,b=1)=>Math.max(a,Math.min(b,v));
+/* 진단용 배경: 머리·목 부분만 남기고 나머지는 중립 회색으로 (부드러운 가장자리 마스크) */
+const fg=document.createElement('canvas');fg.width=W;fg.height=H;const fgx=fg.getContext('2d');
+const mask=document.createElement('canvas');mask.width=W;mask.height=H;
+(()=>{const g=mask.getContext('2d'),im=g.createImageData(W,H),d=im.data;
+  const ss=(e0,e1,x)=>{const t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t)};
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const ex=(x-300)/196,ey=(y-312)/262;let a=1-ss(.86,1,Math.sqrt(ex*ex+ey*ey));
+    if(y>430)a=Math.max(a,(1-ss(80,125,Math.abs(x-300)))*ss(430,510,y));
+    const i=(y*W+x)*4;d[i]=d[i+1]=d[i+2]=255;d[i+3]=a*255;
+  }
+  g.putImageData(im,0,0)})();
+let studioBg=null;
+function neutralBg(g){
+  if(!studioBg){studioBg=g.createRadialGradient(300,330,60,300,380,560);studioBg.addColorStop(0,'#eeeeee');studioBg.addColorStop(1,'#cfcfcf')}
+  g.fillStyle=studioBg;g.fillRect(0,0,W,H);
+}
+function drawStudio(g){ // 카메라 영상 + 중립 회색 배경
+  if(!S.bgOn)return drawVideo(g,W,H);
+  if(!drawVideo(fgx,W,H))return false;
+  fgx.globalCompositeOperation='destination-in';fgx.drawImage(mask,0,0);fgx.globalCompositeOperation='source-over';
+  neutralBg(g);g.drawImage(fg,0,0);return true;
+}
 
 const PAGE_URL='https://cks817s-alt.github.io/personal-color/';
 /* ================= 상태 ================= */
-const S={state:'start',sid:0,hasCam:false,stream:null,lastAct:Date.now()};
+const S={state:'start',sid:0,hasCam:false,stream:null,lastAct:Date.now(),bgOn:true};
 function resetSession(){
   S.sid++;S.cam={T:0,V:0,C:0};S.votes={T:0,V:0,C:0};S.skin=null;S.hair=null;S.lab=null;S.drape=null;S.hasStill=false;
   S.hold=0;S.count=0;S.lost=0;S.force=false;S.acc=[];S.camT=0;S.msgKey='';S.round=0;S.rounds=[];S.scan=0;S.marks=0;S.autoAlt=null;
-  wipe();
+  S.light=null;S.lightAcc=[];S.lt=0;S.bgOn=true;wipe();
 }
-function wipe(){stx.clearRect(0,0,W,H);sctx.clearRect(0,0,150,200);ctx.clearRect(0,0,W,H);S.face=null}
+function wipe(){stx.clearRect(0,0,W,H);sctx.clearRect(0,0,150,200);ctx.clearRect(0,0,W,H);fgx.clearRect(0,0,W,H);S.face=null}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3500)}
 resetSession();
 const later=(ms,fn)=>{const id=S.sid;setTimeout(()=>{if(id===S.sid)fn()},ms)};
@@ -292,7 +326,39 @@ function readFace(){
   const skin=avg(px.length>40?px:all,.2,.9);
   const hp=[];for(let y=22;y<=38;y++)for(let x=55;x<=95;x++){const i=(y*150+x)*4;hp.push([d[i],d[i+1],d[i+2]])}
   const hair=avg(hp,0,.6);
-  return{ratio:sk/n,bright:ys/n,skin,hair};
+  /* 조명 점검: 좌우 볼 밝기(그림자), 얼굴 바깥 배경(벽)의 밝기·색 */
+  const cheek=cx=>{let s=0,c=0;for(let y=88;y<=106;y+=2)for(let x=cx-8;x<=cx+8;x+=2){const i=(y*150+x)*4;s+=.299*d[i]+.587*d[i+1]+.114*d[i+2];c++}return s/c};
+  const bg=[0,0,0];let bn=0,bl=0,bc=0;
+  for(let y=2;y<130;y+=2)for(let x=1;x<150;x+=2){
+    const ex=(x-75)/52,ey=(y-80)/66;if(ex*ex+ey*ey<1.35)continue;
+    const i=(y*150+x)*4,r=d[i],g=d[i+1],b=d[i+2],l=.299*r+.587*g+.114*b;bl+=l;bc++;
+    if(l<45||l>253)continue;bg[0]+=r;bg[1]+=g;bg[2]+=b;bn++;
+  }
+  const bgc=bn?bg.map(v=>v/bn):null;
+  return{ratio:sk/n,bright:ys/n,skin,hair,lr:cheek(55)/Math.max(1,cheek(95)),bgBright:bl/Math.max(1,bc),bgc,bn,sl:lum(skin)};
+}
+/* 조명 색 추정 → 판정 + 보정 계수 (흰·회색 벽이라고 보고 그 색을 조명 색으로 봄) */
+function judgeLight(fs){
+  const m=k=>fs.reduce((s,f)=>s+f[k],0)/fs.length;
+  const bright=m('bright'),lr=m('lr'),bgB=m('bgBright');
+  const cs=fs.filter(f=>f.bgc&&f.bn>150);
+  let cast=null,gain=[1,1,1],tone='측정 어려움',toneOk=true;
+  if(cs.length){
+    const c=[0,1,2].map(i=>cs.reduce((s,f)=>s+f.bgc[i],0)/cs.length),lab=rgb2lab(...c),ch=Math.hypot(lab.a,lab.b);
+    if(ch<32){ // 무채색에 가까운 벽 → 조명 색으로 판단
+      cast=lab;const mean=(c[0]+c[1]+c[2])/3;gain=c.map(v=>clamp(1+(mean/v-1)*.7,.82,1.22));
+      if(ch<7){tone='중립(흰빛) ✓'}
+      else{toneOk=false;tone=lab.b>Math.abs(lab.a)&&lab.b>0?'노란빛 조명':lab.b<0&&-lab.b>Math.abs(lab.a)?'푸른빛 조명':lab.a>0?'분홍빛 조명':'초록빛 조명'}
+    }else tone='벽 색이 진해서 보정 안 함';
+  }
+  const shade=Math.abs(Math.log(lr))>.22,back=bgB-m('sl')>60;
+  return{bright,lr,bgB,cast,gain,tone,toneOk,shade,back,
+    bTxt:bright<80?'어두워요':bright>215?'너무 밝아요':'알맞아요 ✓',bOk:bright>=80&&bright<=215,
+    eTxt:shade?(lr>1?'화면 오른쪽 얼굴에 그림자':'화면 왼쪽 얼굴에 그림자'):back?'뒤쪽이 더 밝아요(역광)':'고르게 비춰요 ✓',eOk:!shade&&!back};
+}
+function lightCard(L){
+  const row=(k,v,ok)=>`<div class="lrow"><b>${k}</b><span class="${ok?'good':'warn'}">${v}</span></div>`;
+  return row('💡 밝기',L.bTxt,L.bOk)+row('🎨 조명 색',L.tone+(L.toneOk?'':' → 자동 보정'),L.toneOk)+row('🌗 빛 방향',L.eTxt,L.eOk);
 }
 
 /* ================= 카메라 ================= */
@@ -303,6 +369,10 @@ async function startCam(){
     if(!(S.stream&&S.stream.active)){
       S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});
       vid.srcObject=S.stream;
+      try{const tr=S.stream.getVideoTracks()[0],cp=tr.getCapabilities?tr.getCapabilities():{},adv={};
+        if((cp.whiteBalanceMode||[]).includes('continuous'))adv.whiteBalanceMode='continuous';
+        if((cp.exposureMode||[]).includes('continuous'))adv.exposureMode='continuous';
+        if(Object.keys(adv).length)tr.applyConstraints({advanced:[adv]}).catch(()=>{})}catch(e){}
     }
     await vid.play();return true;
   }catch(e){
@@ -312,7 +382,10 @@ async function startCam(){
 function stopCam(){try{if(S.stream)S.stream.getTracks().forEach(t=>t.stop())}catch(e){}S.stream=null;vid.srcObject=null}
 
 /* ================= 화면 전환 ================= */
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));document.body.classList.toggle('studio',id==='work');if(id!=='work')lamp(false)}
+function lamp(on){document.body.classList.toggle('lamp',!!on)}
+function bgBtn(){const b=$('#bgBtn');const on=S.hasCam&&(S.state==='drape'||S.state==='result');b.style.display=on?'block':'none';b.textContent=S.bgOn?'🎞 배경: 진단용 회색':'🎞 배경: 원래 배경'}
+$('#bgBtn').onclick=()=>{S.bgOn=!S.bgOn;beep(760,.06);bgBtn();toast(S.bgOn?'진단용 회색 배경으로 바꿨어요':'원래 배경을 보여 줘요 (색 비교는 회색 배경이 더 정확해요)')};
 function setStep(i){document.querySelectorAll('#steps span').forEach((s,k)=>{s.className=k<i?'done':k===i?'on':''})}
 function tag(t){const e=$('#mirrorTag');e.style.display=t?'block':'none';e.textContent=t||''}
 function goStart(){
@@ -335,17 +408,20 @@ $('#goBtn').onclick=async()=>{
 /* ---------- ① 촬영 ---------- */
 const CAMMSG={
   noface:'거울 속 <b>동그라미 안에 얼굴</b>을 쏙 맞춰 주세요. 앞머리를 살짝 넘겨 이마가 보이면 더 정확해요!',
-  dark:'조금 어두워요. <b>밝은 쪽</b>을 바라봐 줄래요?',
-  bright:'빛이 너무 강해요. 몸을 살짝 돌려 볼까요?',
+  dark:'조금 어두워요. <b>조명이나 창문 쪽</b>을 바라봐 줄래요? 화면 밝기를 높여도 좋아요.',
+  bright:'빛이 너무 강해요. 조명을 정면으로 받지 않게 살짝 비켜 서 볼까요?',
   hold:'좋아요, 아주 잘 보여요! <b>그대로 잠깐만</b> 멈춰 주세요~',
   count:'찍을게요! 편안하게 웃어 볼까요? 😊'
 };
 function camMsg(k){if(S.msgKey===k)return;S.msgKey=k;say(CAMMSG[k])}
 function goCam(){
-  S.state='cam';setStep(0);S.camT=0;S.hold=0;S.count=0;S.acc=[];S.msgKey='';camMsg('noface');
-  $('#pane').innerHTML=`<div class="card"><h3>📷 이렇게 하면 더 정확해요</h3><ul class="tips">
-    <li>얼굴 전체가 <b>동그라미 안</b>에 들어오게 서 주세요.</li><li>창문이나 조명 쪽을 <b>바라보면</b> 좋아요.</li>
-    <li>마스크·모자는 잠시 벗어 주세요.</li></ul></div><div class="note">🔒 이 화면은 거울처럼 보여 주기만 해요. <b>저장하거나 전송하지 않고</b>, 체험이 끝나면 바로 지워져요.</div><div id="manual"></div>`;
+  S.state='cam';setStep(0);S.camT=0;S.hold=0;S.count=0;S.acc=[];S.msgKey='';S.lightAcc=[];S.lt=0;lamp(true);bgBtn();camMsg('noface');
+  $('#pane').innerHTML=`<div class="card"><h3>💡 실시간 조명 점검</h3><div id="lightBox"><div class="lrow"><b>조명을 재고 있어요…</b><span></span></div></div></div>
+    <div class="card"><h3>📷 이렇게 하면 더 정확해요</h3><ul class="tips">
+    <li>얼굴 전체가 <b>동그라미 안</b>에 들어오게 서 주세요. 마스크·모자는 잠시 벗어 주세요.</li>
+    <li>노란 전구 조명보다 <b>흰 조명(주광색)</b>이나 낮의 창가 빛이 정확해요.</li>
+    <li>빛이 <b>얼굴 정면</b>에서 오게 서고, 창문을 등지지 않아요.</li>
+    <li>화면 테두리가 하얗게 빛나며 <b>조명 역할</b>을 해요. 화면 밝기를 높여 주세요.</li></ul></div><div class="note">🔒 이 화면은 거울처럼 보여 주기만 해요. <b>저장하거나 전송하지 않고</b>, 체험이 끝나면 바로 지워져요.</div><div id="manual"></div>`;
 }
 function startCount(force){if(S.count>0)return;S.force=!!force;S.count=3;S.acc=[];S.lost=0;camMsg('count');beep(880,.1)}
 function camTick(dt){
@@ -353,6 +429,8 @@ function camTick(dt){
   if(S.camT>7&&!$('#manual').innerHTML){$('#manual').innerHTML='<button class="big ghost" id="mBtn">얼굴을 맞췄어요! 지금 찍기</button>';$('#mBtn').onclick=()=>startCount(true)}
   S.rt=(S.rt||0)+dt;if(S.rt<.12)return;S.rt=0;
   const f=readFace();if(!f)return;S.face=f;
+  if(f.ratio>.3){S.lightAcc.push(f);if(S.lightAcc.length>12)S.lightAcc.shift()}
+  S.lt+=.12;if(S.lt>=.6&&S.lightAcc.length){S.lt=0;const lb=$('#lightBox');if(lb)lb.innerHTML=lightCard(judgeLight(S.lightAcc))}
   const okL=f.bright>55&&f.bright<228,ok=f.ratio>.38&&okL;
   if(ok)S.lastAct=Date.now();
   if(S.count>0){
@@ -366,8 +444,10 @@ function finishCapture(){
   const acc=S.acc.length?S.acc:[S.face||readFace()].filter(Boolean);
   if(!acc.length){goCam();return}
   const m=k=>[0,1,2].map(i=>acc.reduce((s,f)=>s+f[k][i],0)/acc.length);
-  S.skin=m('skin');S.hair=m('hair');
-  drawVideo(stx,W,H);S.hasStill=true;
+  S.light=judgeLight(S.lightAcc.length?S.lightAcc:acc);lamp(false);
+  const G=S.light.gain;
+  S.skinRaw=m('skin');S.skin=S.skinRaw.map((v,i)=>clamp(v*G[i],0,255));S.hair=m('hair').map((v,i)=>clamp(v*G[i],0,255));
+  drawStudio(stx);S.hasStill=true;
   const lab=rgb2lab(...S.skin),hl=rgb2lab(...S.hair);
   const hue=Math.atan2(lab.b,lab.a)*180/Math.PI,chroma=Math.hypot(lab.a,lab.b);
   S.lab={L:lab.L,a:lab.a,b:lab.b,hue,chroma,contrast:lab.L-hl.L};
@@ -386,16 +466,17 @@ function goAnalyze(){
   $('#pane').innerHTML=`<div class="card"><h3>🔍 AI가 읽은 나의 색</h3><div class="swrow">
      <div class="sw" id="sw1"><i style="background:${hex(S.skin)}"></i><div><b>피부색</b><small>볼과 이마의 평균</small></div></div>
      <div class="sw" id="sw2"><i style="background:${hex(S.hair)}"></i><div><b>머리카락색</b><small>머리 윗부분</small></div></div></div></div>
+   ${S.light?`<div class="card"><h3>💡 촬영할 때의 조명</h3>${lightCard(S.light)}</div>`:''}
    <div class="card"><h3>📊 카메라가 본 첫인상</h3>
      ${gauge('g-t','❄️ 시원한 톤','따뜻한 톤 ☀️','gT')}${gauge('g-v','🌙 깊은 색','밝은 색 🌤️','gV')}${gauge('g-c','☁️ 부드러움','또렷함 ✨','gC')}</div>
    <div id="next"></div>`;
   later(1400,()=>{S.marks=1;$('#sw1').classList.add('in');beep(990,.08);say('먼저 <b>피부색</b>이에요. 볼과 이마에서 색을 모아 평균을 냈어요.')});
   later(4300,()=>{S.marks=2;$('#sw2').classList.add('in');beep(990,.08);say('다음은 <b>머리카락색</b>! 피부와 머리카락의 밝기 차이도 중요한 단서랍니다.')});
   later(7400,()=>{$('#gT').style.left=gpos(S.cam.T);$('#gV').style.left=gpos(S.cam.V);$('#gC').style.left=gpos(S.cam.C);beep(1175,.1);
-    say('노란 기운이 많으면 <b>따뜻한 톤</b>, 붉고 푸른 기운이 많으면 <b>시원한 톤</b>이에요. 밝기와 또렷함도 함께 쟀어요.')});
+    const L=S.light;say((L&&!L.toneOk&&L.cast?`이곳 조명이 <b>${L.tone.replace(' 조명','')}</b>을 띠어서, 그만큼 색을 <b>자동으로 보정</b>했어요. `:'')+'노란 기운이 많으면 <b>따뜻한 톤</b>, 붉고 푸른 기운이 많으면 <b>시원한 톤</b>이에요.')});
   later(11500,()=>{S.lastAct=Date.now();
     const t=Math.abs(S.cam.T)<.25?'따뜻함과 시원함의 <b>가운데</b>':S.cam.T>0?'<b>따뜻한 톤</b> 쪽':'<b>시원한 톤</b> 쪽';
-    say(`카메라가 본 첫인상은 ${t}이에요. 하지만 조명에 따라 달라질 수 있어요. 진짜 전문가들처럼 <b>색 천을 직접 대 보면서</b> 확인해 볼까요?`);
+    say(`카메라가 본 첫인상은 ${t}이에요. 하지만 조명에 따라 달라질 수 있어요. 배경은 색 판단을 방해하지 않게 <b>중립 회색</b>으로 바꿨어요. 진짜 전문가들처럼 <b>색 천을 직접 대 보면서</b> 확인해 볼까요?`);
     $('#next').innerHTML='<button class="big" id="nBtn">🧣 색 천 대 보기 시작!</button>';$('#nBtn').onclick=()=>{beep(660,.1);startRounds()};});
 }
 
@@ -430,7 +511,7 @@ function fillRound(r){
 const score=a=>.6*S.cam[a]+S.votes[a];
 function startRounds(){S.rounds=buildRounds();S.round=0;S.state='drape';setStep(2);showRound()}
 function showRound(){
-  const r=fillRound(S.rounds[S.round]),n=S.rounds.length,isQ=!r.A.col;
+  const r=fillRound(S.rounds[S.round]),n=S.rounds.length,isQ=!r.A.col;bgBtn();
   S.lastAct=Date.now();
   const dot=o=>o.col?`<div class="dot" style="background:${Array.isArray(o.col)?`linear-gradient(120deg,${o.col.join(',')})`:o.col}"></div>`:`<div class="dot" style="background:#fff2f5"><span>${o.emo}</span></div>`;
   $('#pane').innerHTML=`<div class="rtitle"><small>${S.round+1} / ${n}</small>${r.title}</div>
@@ -527,7 +608,7 @@ function decide(){
   return{k,T,V,C};
 }
 function goResult(){
-  const {k,T,V,C}=decide(),t=TYPES[k];S.state='result';setStep(3);S.type=k;S.lastAct=Date.now();
+  const {k,T,V,C}=decide(),t=TYPES[k];S.state='result';setStep(3);S.type=k;S.lastAct=Date.now();bgBtn();
   $('#work').classList.add('result');chime();
   const chip=(p,i,cls)=>`<button class="chip ${cls}" data-c="${p.c}" data-n="${p.n}"><i style="background:${p.c}"></i>${p.n}</button>`;
   const ring=`conic-gradient(${t.best.map((p,i)=>`${p.c} ${i*45}deg ${(i+1)*45}deg`).join(',')})`;
@@ -538,6 +619,7 @@ function goResult(){
     <ol class="steps4"><li>카메라는 얼굴을 아주 작은 점(<b>픽셀</b>) 수십만 개로 나눠요.</li>
     <li>볼과 이마에 있는 점들의 <b>빨강·초록·파랑(RGB)</b> 값을 모아 평균을 냈어요.</li>
     <li>이 값을 사람 눈과 비슷한 <b>밝기 ${Math.round(S.lab.L)}</b> · 붉은 기운 ${Math.round(S.lab.a)} · 노란 기운 ${Math.round(S.lab.b)}(으)로 바꿨어요.</li>
+    <li>배경은 <b>중립 회색</b>으로 바꾸고, 조명 색은 ${S.light&&!S.light.toneOk&&S.light.cast?`<b>${S.light.tone}</b>이라 흰빛 기준으로 <b>자동 보정</b>했어요`:'<b>흰빛(중립)</b>에 가까워 그대로 썼어요'}.</li>
     <li>여기에 여러분이 <b>직접 고른 색 천</b> 결과를 더해 최종 진단을 내렸어요.</li></ol></div>`:'';
   $('#pane').innerHTML=`
    <div class="res-head" style="background:${t.grad}">${photo}<div class="em">${t.em}</div><h2>${t.name}</h2><p>${t.key}</p></div>
@@ -597,22 +679,22 @@ function frame(now){
   if(S.state!=='start'){
     const g=ctx,st=S.state;
     if(st==='analyze'&&S.hasStill)g.drawImage(still,0,0);
-    else if(!(S.hasCam&&drawVideo(g,W,H)))drawBust();
+    else if(!(S.hasCam&&(st==='drape'||st==='result'?drawStudio(g):drawVideo(g,W,H))))drawBust();
 
     if(st==='cam'){
       camTick(dt);
-      g.save();g.fillStyle='rgba(40,20,30,.55)';g.beginPath();g.rect(0,0,W,H);g.ellipse(OV.x,OV.y,OV.rx,OV.ry,0,0,Math.PI*2);g.fill('evenodd');g.restore();
+      g.save();g.fillStyle='rgba(236,236,236,.84)';g.beginPath();g.rect(0,0,W,H);g.ellipse(OV.x,OV.y,OV.rx+28,OV.ry+28,0,0,Math.PI*2);g.fill('evenodd');g.restore();
       const good=S.hold>0||S.count>0;
-      g.lineWidth=7;g.setLineDash(good?[]:[18,14]);g.strokeStyle=good?'#55e0a0':'#fff';ovalPath(g);g.stroke();g.setLineDash([]);
+      g.lineWidth=7;g.setLineDash(good?[]:[18,14]);g.strokeStyle=good?'#2fb47c':'#8a8a8a';ovalPath(g);g.stroke();g.setLineDash([]);
       if(S.count>0){
         const before=Math.ceil(S.count);S.count-=dt;
         g.fillStyle='rgba(255,255,255,.95)';g.font='900 190px sans-serif';g.textAlign='center';g.textBaseline='middle';
         g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=20;g.fillText(Math.max(1,Math.ceil(S.count)),OV.x,OV.y);g.shadowBlur=0;
         if(S.count>0&&Math.ceil(S.count)!==before)beep(880,.1);
         if(S.count<=0){g.fillStyle='#fff';g.fillRect(0,0,W,H);finishCapture()}
-      }else if(S.hold>0){g.strokeStyle='#55e0a0';g.lineWidth=12;g.beginPath();g.ellipse(OV.x,OV.y,OV.rx+16,OV.ry+16,0,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,S.hold));g.stroke()}
-      g.fillStyle='#fff';g.font='800 30px sans-serif';g.textAlign='center';g.textBaseline='alphabetic';g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=8;
-      g.fillText('동그라미 안에 얼굴을 맞춰 주세요',W/2,H-150);g.shadowBlur=0;
+      }else if(S.hold>0){g.strokeStyle='#2fb47c';g.lineWidth=12;g.beginPath();g.ellipse(OV.x,OV.y,OV.rx+16,OV.ry+16,0,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,S.hold));g.stroke()}
+      g.fillStyle='#555';g.font='800 30px sans-serif';g.textAlign='center';g.textBaseline='alphabetic';
+      g.fillText('동그라미 안에 얼굴을 맞춰 주세요',W/2,H-70);
     }else if(st==='analyze'){
       S.scan+=dt;const y=(Math.sin(S.scan*2.2)*.5+.5)*(OV.ry*2)+OV.y-OV.ry;
       g.save();ovalPath(g);g.clip();const lg=g.createLinearGradient(0,y-50,0,y+6);lg.addColorStop(0,'rgba(255,120,170,0)');lg.addColorStop(1,'rgba(255,120,170,.5)');
