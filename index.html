@@ -38,7 +38,7 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
   padding:.7em 2em;border-radius:999px;box-shadow:0 10px 26px rgba(197,79,123,.4);animation:pulse 1.8s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.05)}}
 .priv{margin-top:1.2em;font-size:.95em;color:var(--sub);position:relative}
-.credit{position:absolute;bottom:.7em;left:0;right:0;font-size:.85em;color:#a98a97}
+.credit{position:relative;display:inline-block;margin-top:1em;font-size:1em;font-weight:800;color:var(--rose2);background:rgba(255,255,255,.85);border:2px solid var(--line);border-radius:999px;padding:.4em 1.2em}.credit small{font-weight:600;color:var(--sub);margin-left:.5em}
 
 /* ---------- 진단 화면 ---------- */
 #work{gap:1em;padding:0 1em 1em;align-items:stretch}
@@ -114,6 +114,16 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
 .chips.no .chip i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top right,transparent 46%,rgba(255,255,255,.9) 47%,rgba(255,255,255,.9) 53%,transparent 54%)}
 .note{font-size:.9em;color:var(--sub);line-height:1.6;background:#fff8e8;border-radius:1em;padding:.8em 1em;margin-bottom:.8em}
 .steps4{margin:0;padding-left:1.3em;line-height:1.7;font-size:.96em}
+.priv button{background:#fff;border:2px solid var(--line);border-radius:999px;padding:.45em 1.1em;font-weight:800;color:var(--rose2);font-size:1em;margin-top:.5em}
+#noCamBtn{position:relative;margin-top:.9em;background:none;font-size:1em;font-weight:700;color:var(--sub);text-decoration:underline}
+#privacy{position:fixed;inset:0;background:rgba(59,42,51,.55);display:none;align-items:center;justify-content:center;padding:1em;z-index:50}
+#privacy.on{display:flex}
+#privacy .box{background:#fff;border-radius:1.4em;max-width:44em;width:100%;max-height:92%;overflow-y:auto;padding:1.3em 1.5em;box-shadow:0 20px 50px rgba(0,0,0,.3);font-size:clamp(14px,1.9vmin,21px);line-height:1.6}
+#privacy h2{margin:0 0 .5em;color:var(--rose2);font-size:1.4em}
+#privacy dl{margin:0}#privacy dt{font-weight:800;margin-top:.7em;color:var(--ink)}#privacy dd{margin:.1em 0 0;color:#5a4650}
+#privacy dd b{color:var(--rose2)}
+#toast{position:fixed;left:50%;bottom:8%;transform:translateX(-50%);background:#2f7d5c;color:#fff;font-weight:800;padding:.7em 1.4em;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25);z-index:60;display:none;font-size:clamp(14px,2vmin,22px);white-space:nowrap}
+.delbtn{display:inline-block;margin-top:.5em;background:rgba(255,255,255,.92);color:var(--rose2);font-weight:800;border-radius:999px;padding:.35em 1em;font-size:.9em}
 #cdn{font-size:.85em;color:#a98a97;text-align:center;margin-top:.6em}
 #vid{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0}
 
@@ -158,8 +168,9 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
       <div><b>🌈</b><span>③ 나의 컬러 확인</span><i>어울리는 색과 꾸미기 팁</i></div>
     </div>
     <button id="goBtn">진단 시작하기</button>
-    <div class="priv">🔒 사진과 영상은 저장하거나 어디로도 보내지 않아요. 이 기기 안에서만 잠깐 사용해요.</div>
-    <div class="credit">연수중학교 최경수 제작</div>
+    <button id="noCamBtn">카메라 없이 질문으로 진단하기</button>
+    <div class="priv">🔒 얼굴 사진과 영상은 <b>저장하지 않고, 어디로도 보내지 않아요.</b> 체험이 끝나면 바로 지워져요.<br><button id="privBtn">📄 사진·개인정보 이용 안내 보기</button></div>
+    <div class="credit">🏫 만든 사람 · 연수중학교 교사 최경수<small>생성형 AI(Claude)와 함께 제작</small></div>
   </section>
 
   <section id="work" class="screen">
@@ -186,6 +197,20 @@ button{font-family:inherit;color:inherit;border:0;cursor:pointer}
     </div>
   </section>
 </div>
+<div id="privacy"><div class="box">
+  <h2>🔒 사진·개인정보 이용 안내</h2>
+  <dl>
+   <dt>① 무엇을 사용하나요?</dt><dd>카메라에 비친 <b>얼굴 화면</b>과, 진단을 위해 찍는 <b>사진 1장</b>만 사용해요. 이름·학교·연락처 같은 정보는 묻지 않아요.</dd>
+   <dt>② 어디에 사용하나요?</dt><dd>피부색과 머리카락색을 계산하고, 거울 화면과 결과 카드를 <b>본인에게 보여 주는 데에만</b> 사용해요.</dd>
+   <dt>③ 저장하나요?</dt><dd><b>저장하지 않아요.</b> 파일, 서버, 브라우저 저장소 어디에도 남기지 않고, 체험하는 동안 이 기기의 임시 기억(메모리)에만 잠깐 올려 둬요.</dd>
+   <dt>④ 다른 곳으로 보내나요?</dt><dd><b>보내지 않아요.</b> 모든 계산은 이 기기 안에서만 이루어져요. 인터넷으로 전송하지 않으므로 만든 사람이나 다른 사람은 사진을 볼 수 없어요.</dd>
+   <dt>⑤ 언제 지워지나요?</dt><dd>「처음으로」나 「처음부터 다시 하기」를 누르면 <b>즉시 지워지고 카메라도 꺼져요.</b> 60~90초 동안 아무도 누르지 않아도 자동으로 지워져요. 결과 화면의 <b>「내 사진 지금 지우기」</b>로 바로 지울 수도 있어요.</dd>
+   <dt>⑥ 카메라를 쓰고 싶지 않다면?</dt><dd>첫 화면의 <b>「카메라 없이 질문으로 진단하기」</b>를 누르면 사진을 찍지 않고 체험할 수 있어요.</dd>
+   <dt>⑦ 함께 지켜 주세요</dt><dd>체험 중에는 화면에 얼굴이 보여요. <b>다른 사람이 체험하는 화면을 허락 없이 촬영하지 말아 주세요.</b></dd>
+  </dl>
+  <button class="big" id="privClose">확인했어요</button>
+</div></div>
+<div id="toast"></div>
 <video id="vid" playsinline muted autoplay></video>
 
 <script>
@@ -203,8 +228,10 @@ const S={state:'start',sid:0,hasCam:false,stream:null,lastAct:Date.now()};
 function resetSession(){
   S.sid++;S.cam={T:0,V:0,C:0};S.votes={T:0,V:0,C:0};S.skin=null;S.hair=null;S.lab=null;S.drape=null;S.hasStill=false;
   S.hold=0;S.count=0;S.lost=0;S.force=false;S.acc=[];S.camT=0;S.msgKey='';S.round=0;S.rounds=[];S.scan=0;S.marks=0;S.autoAlt=null;
-  stx.clearRect(0,0,W,H);
+  wipe();
 }
+function wipe(){stx.clearRect(0,0,W,H);sctx.clearRect(0,0,150,200);ctx.clearRect(0,0,W,H);S.face=null}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3500)}
 resetSession();
 const later=(ms,fn)=>{const id=S.sid;setTimeout(()=>{if(id===S.sid)fn()},ms)};
 
@@ -289,9 +316,14 @@ function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.to
 function setStep(i){document.querySelectorAll('#steps span').forEach((s,k)=>{s.className=k<i?'done':k===i?'on':''})}
 function tag(t){const e=$('#mirrorTag');e.style.display=t?'block':'none';e.textContent=t||''}
 function goStart(){
+  const had=S.hasStill||S.hasCam;
   resetSession();S.state='start';stopCam();S.hasCam=false;if('speechSynthesis' in window)speechSynthesis.cancel();
   $('#pane').innerHTML='';tag('');$('#work').classList.remove('result');show('start');
+  if(had)toast('✅ 사진을 지우고 카메라를 껐어요');
 }
+$('#privBtn').onclick=()=>$('#privacy').classList.add('on');
+$('#privClose').onclick=()=>$('#privacy').classList.remove('on');
+$('#noCamBtn').onclick=()=>{beep(660,.1);resetSession();show('work');$('#work').classList.remove('result');S.hasCam=false;S.choseNoCam=true;S.state='drape';setStep(2);startRounds()};
 $('#homeBtn').onclick=goStart;
 $('#goBtn').onclick=async()=>{
   beep(660,.1);resetSession();show('work');$('#work').classList.remove('result');S.state='wait';setStep(0);
@@ -313,7 +345,7 @@ function goCam(){
   S.state='cam';setStep(0);S.camT=0;S.hold=0;S.count=0;S.acc=[];S.msgKey='';camMsg('noface');
   $('#pane').innerHTML=`<div class="card"><h3>📷 이렇게 하면 더 정확해요</h3><ul class="tips">
     <li>얼굴 전체가 <b>동그라미 안</b>에 들어오게 서 주세요.</li><li>창문이나 조명 쪽을 <b>바라보면</b> 좋아요.</li>
-    <li>마스크·모자는 잠시 벗어 주세요.</li></ul></div><div id="manual"></div>`;
+    <li>마스크·모자는 잠시 벗어 주세요.</li></ul></div><div class="note">🔒 이 화면은 거울처럼 보여 주기만 해요. <b>저장하거나 전송하지 않고</b>, 체험이 끝나면 바로 지워져요.</div><div id="manual"></div>`;
 }
 function startCount(force){if(S.count>0)return;S.force=!!force;S.count=3;S.acc=[];S.lost=0;camMsg('count');beep(880,.1)}
 function camTick(dt){
@@ -412,7 +444,7 @@ function showRound(){
   if(isQ){S.drape=null;tag('')}else{sel('A');S.autoAlt=setInterval(()=>{cur=cur==='A'?'B':'A';sel(cur)},2300)}
   $('#pA').onclick=()=>{clearInterval(S.autoAlt);beep(740,.06);sel('A')};$('#pB').onclick=()=>{clearInterval(S.autoAlt);beep(830,.06);sel('B')};
   $('#oA').onclick=()=>vote(r,1);$('#oB').onclick=()=>vote(r,-1);$('#oM').onclick=()=>vote(r,0);
-  const intro=isQ?`카메라를 쓸 수 없어서 <b>질문</b>으로 알아볼게요. ${r.title}`:
+  const intro=isQ?`${S.round?'':'안녕하세요! 저는 컬러 선생님 <b>빛나</b>예요. 카메라 없이 <b>질문</b>으로 알아볼게요. '}${r.title}`:
     S.round===n-4||(!S.hasCam&&S.round===2)?`자, 거울을 보세요! 턱 아래에 색 천을 대 드릴게요. <b>${r.A.name}</b>와 <b>${r.B.name}</b> 중 어느 쪽이 얼굴을 더 환하게 해 주나요?`:
     `이번에는 <b>${r.title.replace(' vs ','</b>과 <b>')}</b>이에요. 천천히 번갈아 보고 골라 주세요.`;
   say(intro);
@@ -499,7 +531,7 @@ function goResult(){
   $('#work').classList.add('result');chime();
   const chip=(p,i,cls)=>`<button class="chip ${cls}" data-c="${p.c}" data-n="${p.n}"><i style="background:${p.c}"></i>${p.n}</button>`;
   const ring=`conic-gradient(${t.best.map((p,i)=>`${p.c} ${i*45}deg ${(i+1)*45}deg`).join(',')})`;
-  const photo=S.hasStill?`<div class="photo" style="background:${ring}"><div style="background-image:url(${still.toDataURL('image/jpeg',.8)})"></div></div>`:'';
+  const photo=S.hasStill?`<div class="photo" style="background:${ring}"><div style="background-image:url(${still.toDataURL('image/jpeg',.8)})"></div></div><button class="delbtn" id="delBtn">🗑 내 사진 지금 지우기</button><br>`:'';
   const ai=S.lab?`<div class="card"><h3>🤖 AI는 색을 이렇게 봤어요</h3>
     <div class="swrow" style="margin-bottom:.6em"><div class="sw in"><i style="background:${hex(S.skin)}"></i><div><b>피부색 ${hex(S.skin).toUpperCase()}</b><small>빨강 ${S.skin[0]|0} · 초록 ${S.skin[1]|0} · 파랑 ${S.skin[2]|0}</small></div></div>
     <div class="sw in"><i style="background:${hex(S.hair)}"></i><div><b>머리카락색</b><small>피부와 밝기 차이 ${Math.round(S.lab.contrast)}</small></div></div></div>
@@ -515,8 +547,9 @@ function goResult(){
    <div class="card"><h3>✨ 이렇게 활용해 보세요</h3><ul class="tips">${TIPS[t.season].map(s=>`<li>${s}</li>`).join('')}</ul></div>
    <div class="card"><h3>📊 나의 컬러 좌표</h3>${gauge('g-t','❄️ 시원한 톤','따뜻한 톤 ☀️','rT')}${gauge('g-v','🌙 깊은 색','밝은 색 🌤️','rV')}${gauge('g-c','☁️ 부드러움','또렷함 ✨','rC')}</div>
    ${ai}
+   <div class="note">🔒 방금 찍은 사진은 <b>저장·전송되지 않았어요.</b> 「처음부터 다시 하기」를 누르거나 잠시 그대로 두면 바로 지워지고 카메라도 꺼져요.</div>
    <div class="note">🌈 <b>기억해 주세요!</b> 퍼스널컬러는 정답이 아니라 <b>참고</b>예요. 조명이나 카메라에 따라 결과가 달라질 수 있고, 아쉬운 색도 가방·신발처럼 얼굴에서 먼 곳에 쓰면 멋지답니다. 무엇보다 <b>내가 좋아하는 색</b>이 가장 좋은 색이에요.</div>
-   <button class="big" id="againBtn">🔄 처음부터 다시 하기</button><div id="cdn"></div>`;
+   <button class="big" id="againBtn">🔄 처음부터 다시 하기</button><div id="cdn"></div><div style="text-align:center;margin-top:.8em"><span class="credit" style="margin-top:0">🏫 만든 사람 · 연수중학교 교사 최경수</span></div>`;
   $('#pane').scrollTop=0;$('#side').scrollTop=0;
   later(60,()=>{$('#rT').style.left=gpos(T/1.6);$('#rV').style.left=gpos(V/1.4);$('#rC').style.left=gpos(C/1.4)});
   const first=t.best[1];S.drape=first.c;tag(S.hasCam?'베스트 · '+first.n:'');
@@ -526,6 +559,7 @@ function goResult(){
     if(S.hasCam)say(bad?`<b>${b.dataset.n}</b>은 얼굴 가까이에 두면 조금 칙칙해 보일 수 있어요. 베스트 컬러와 번갈아 비교해 보세요!`:`<b>${b.dataset.n}</b>! 얼굴이 환해 보이지 않나요? 정말 잘 어울려요.`,true);
   });
   $('#againBtn').onclick=goStart;
+  const del=$('#delBtn');if(del)del.onclick=()=>{stx.clearRect(0,0,W,H);S.hasStill=false;const ph=document.querySelector('.photo');if(ph)ph.remove();del.nextSibling&&del.nextSibling.remove();del.remove();beep(700,.08);toast('✅ 사진을 지웠어요');say('사진을 지웠어요. 거울 화면은 계속 볼 수 있고, 처음으로 돌아가면 카메라도 꺼져요.',true)};
   say(`두근두근, 결과가 나왔어요! 당신의 퍼스널컬러는 <b>${t.name}</b>이에요. ${t.desc.replace(/<[^>]+>/g,'')} ${S.hasCam?'아래 색을 눌러 거울에 직접 대 보세요!':''}`);
 }
 
